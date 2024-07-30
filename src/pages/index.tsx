@@ -1,4 +1,5 @@
 import * as Tabs from '@radix-ui/react-tabs'
+import { useState } from 'react'
 
 import { CreateTodoForm } from '@/client/components/CreateTodoForm'
 import { TodoList } from '@/client/components/TodoList'
@@ -24,7 +25,11 @@ const STATUSES = [
   { value: 'completed', label: 'Completed' },
 ] as const
 
+type StatusValue = (typeof STATUSES)[number]['value']
+
 const Index = () => {
+  const [currentStatus, setCurrentStatus] = useState<StatusValue>('all')
+
   return (
     <main className="mx-auto w-[480px] pt-12">
       <div className="rounded-12 bg-white p-8 shadow-sm">
@@ -33,7 +38,10 @@ const Index = () => {
         </h1>
 
         <div className="pt-10">
-          <Tabs.Root defaultValue="all">
+          <Tabs.Root
+            defaultValue="all"
+            onValueChange={(value) => setCurrentStatus(value as StatusValue)}
+          >
             <Tabs.List className="space-x-2">
               {STATUSES.map((status) => (
                 <Tabs.Trigger key={status.value} value={status.value} asChild>
@@ -43,11 +51,9 @@ const Index = () => {
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
-            {STATUSES.map((status) => (
-              <Tabs.Content key={status.value} value={status.value}>
-                <TodoList status={status.value} />
-              </Tabs.Content>
-            ))}
+            <Tabs.Content value={currentStatus}>
+              <TodoList status={currentStatus} />
+            </Tabs.Content>
           </Tabs.Root>
         </div>
 
