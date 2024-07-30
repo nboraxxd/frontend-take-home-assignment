@@ -1,3 +1,5 @@
+import * as Tabs from '@radix-ui/react-tabs'
+
 import { CreateTodoForm } from '@/client/components/CreateTodoForm'
 import { TodoList } from '@/client/components/TodoList'
 
@@ -16,6 +18,12 @@ import { TodoList } from '@/client/components/TodoList'
  *  - https://www.radix-ui.com/docs/primitives/components/tabs
  */
 
+const STATUSES = [
+  { value: 'all', label: 'All' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'completed', label: 'Completed' },
+] as const
+
 const Index = () => {
   return (
     <main className="mx-auto w-[480px] pt-12">
@@ -25,7 +33,22 @@ const Index = () => {
         </h1>
 
         <div className="pt-10">
-          <TodoList />
+          <Tabs.Root defaultValue="all">
+            <Tabs.List className="space-x-2">
+              {STATUSES.map((status) => (
+                <Tabs.Trigger key={status.value} value={status.value} asChild>
+                  <button className="rounded-full border border-gray-200 px-6 py-3 text-sm font-bold text-gray-700 transition-colors hover:border-gray-300 data-[state=active]:border-none data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:hover:bg-gray-800">
+                    {status.label}
+                  </button>
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+            {STATUSES.map((status) => (
+              <Tabs.Content key={status.value} value={status.value}>
+                <TodoList status={status.value} />
+              </Tabs.Content>
+            ))}
+          </Tabs.Root>
         </div>
 
         <div className="pt-10">
